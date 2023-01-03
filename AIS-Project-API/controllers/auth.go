@@ -9,25 +9,16 @@ import (
 )
 
 func CurrentUser(c *gin.Context) {
-	userId, err := token.ExtractTokenID(c)
+
+	user_id, err := token.ExtractTokenID(c)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// check whether the user has the rights to access the data
-	var user database.User
-	database.DB.Select("admin_rights").Where("id = ?", userId).Table("users").Find(&user)
-	if !user.AdminRights {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "unauthorized api call",
-		})
-		return
-	}
+	u, err := database.GetUserByID(user_id)
 
-	u, err := database.GetUserByID(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

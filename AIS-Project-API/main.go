@@ -24,9 +24,13 @@ func main() {
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.GET("/user", controllers.CurrentUser)
 
+	protectedSubjects := r.Group("/api/subjects")
+	protectedSubjects.Use(middlewares.JwtAuthMiddleware())
+	protectedSubjects.POST("/editgrade", controllers.EditGrade)
+
 	subject := r.Group("/api/subject")
+	subject.Use(middlewares.JwtAuthMiddleware())
 	subject.POST("joinsubject", controllers.EnrollCourse)
 
 	r.Run(":8080")
-
 }
