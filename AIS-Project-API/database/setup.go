@@ -30,6 +30,5 @@ func ConnectDataBase() {
 		fmt.Println("We are connected to the database ")
 	}
 
-	DB.AutoMigrate(&User{})
-
+	DB.AutoMigrate(&User{}, &Student{}, &Teacher{}, &Course{}, &Enrollment{}, &Grade{})
 }
