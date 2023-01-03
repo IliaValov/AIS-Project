@@ -8,6 +8,39 @@ import (
 	"strconv"
 )
 
+type GradeInput struct {
+	CourseId  uint   `json:"courseId"`
+	StudentId uint   `json:"studentId"`
+	Grade     uint64 `json:"grade"`
+}
+
+func EditGrade(c *gin.Context) {
+	var gradeInput GradeInput
+
+	if err := c.ShouldBindJSON(&gradeInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	grade := database.Grade{
+		StudentId: gradeInput.StudentId,
+		CourseId:  gradeInput.CourseId,
+		Grade:     gradeInput.Grade,
+	}
+
+	_, err := grade.Edit()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "grade edited successfully",
+	})
+}
+
 type EnrollInput struct {
 	StudentId string `json:"studentId" binding:"required"`
 	CourseId  string `json:"courseId" binding:"required"`
