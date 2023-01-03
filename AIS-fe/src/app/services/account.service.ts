@@ -6,11 +6,12 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AccountService {
+  private loginUrl: string = 'http://localhost:8080/api/login'
 
   constructor(private httpClient: HttpClient) { }
 
   public login(username: String, password: String): Observable<any> {
-    //TODO: to be discussed details around communication with BE
-    return this.httpClient.post("", { username, password });
+    console.log("Try to login");
+    return this.httpClient.post(this.loginUrl, { username, password });
   }
 }

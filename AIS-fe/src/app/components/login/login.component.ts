@@ -47,9 +47,13 @@ export class LoginComponent implements OnInit {
             .subscribe({
                 next: token => {
                     // on success
+                    console.log("here is token");
+                    console.log(token);
                     this.cookieService.set('user-jwt', token);
+                    //localStorage.setItem("jwt", token)
 
-                    const role: boolean = this.jwtDecodeService.getDecodedAccessToken(token)['AdminRights'];
+                    console.log(this.jwtDecodeService.getDecodedAccessToken(token));
+                    const role: boolean = this.jwtDecodeService.getDecodedAccessToken(token)['admin-rights'];
                     if (role) {
                         this.router.navigate(['/home/teacher']);
                     } else {

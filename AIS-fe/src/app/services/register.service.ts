@@ -7,11 +7,12 @@ import { RegisterRequest } from '../dto/requests/register-request';
   providedIn: 'root'
 })
 export class RegisterService {
+  private registerUrl: string = 'http://localhost:8080/api/register'
 
   constructor(private httpClient: HttpClient) {}
 
   public register(registerRequest: RegisterRequest): Observable<any> {
-    //TODO: to be discussed details around communication with BE
-    return this.httpClient.post("", registerRequest);
+    console.log("Try to register :melting face");
+    return this.httpClient.post(this.registerUrl, registerRequest);
   }
 }

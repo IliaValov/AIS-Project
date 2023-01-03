@@ -1,0 +1,7 @@
+<nav>
+    <h1>Student Management System</h1>
+    <ul>
+        <li><a [routerLink]="['/']">Home</a></li>
+        <li *ngIf="!isAuthenticated()"><a [routerLink]="['/login']"></a></li>
+    </ul>
+</nav>
