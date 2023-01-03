@@ -23,6 +23,7 @@ func main() {
 	protected := r.Group("/api/admin")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.GET("/user", controllers.CurrentUser)
+	protected.GET("/user/:id", controllers.GetUserById)
 
 	r.Run(":8080")
 
