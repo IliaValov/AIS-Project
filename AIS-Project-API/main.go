@@ -8,6 +8,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//[POST] api/subjects/editgrade
+//{
+//"studentId": 1,
+//"subjectId": 1
+//“grade” : 2
+//}
 func main() {
 
 	println("Starting...")
@@ -23,6 +29,10 @@ func main() {
 	protected := r.Group("/api/admin")
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.GET("/user", controllers.CurrentUser)
+
+	protectedSubjects := r.Group("/api/subjects")
+	protectedSubjects.Use(middlewares.JwtAuthMiddleware())
+	protectedSubjects.POST("/editgrade", controllers.EditGrade)
 
 	r.Run(":8080")
 
