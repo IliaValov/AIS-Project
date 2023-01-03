@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html"
+	"math/rand"
 	"strings"
 
 	"github.com/jinzhu/gorm"
@@ -68,39 +69,49 @@ func LoginCheck(username string, password string) (string, error) {
 
 }
 
-func (u *User) SaveUser(name string) (*User, error) {
+func (u *User) SaveUser(firstName, lastName string) (*User, error) {
 	var err error
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return &User{}, err
 	}
-
 	u.Password = string(hashedPassword)
 
-	//remove spaces in username
-	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
+	// generate username in the form firstName_lastName_random3letterSuffix
+	suffix := generateRandomSuffix()
+	u.Username = html.EscapeString(strings.TrimSpace(
+		fmt.Sprintf("%s_%s_%s", firstName, lastName, suffix)))
 
+	// persist in the database
 	err = DB.Model(&User{}).Create(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
 
-	if !u.AdminRights {
-		student := Student{User: *u, Name: name}
-		err = DB.Create(&student).Error
-	} else {
-		teacher := Teacher{User: *u, Name: name}
-		err = DB.Create(&teacher).Error
-	}
+	// persist in the Student table
+	student := Student{User: *u, FirstName: firstName, LastName: lastName}
+	err = DB.Create(&student).Error
 
 	if err != nil {
+		// delete the user in Users table in case of error
 		errDrop := DB.Delete(&u)
 		err = fmt.Errorf("%w; %s", err, errDrop.Error)
 		return &User{}, err
 	}
 
 	return u, nil
+}
+
+func generateRandomSuffix() string {
+	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+	b := make([]byte, 3)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+
+	return string(b)
 }
 
 // func (u *User) BeforeSave(tx *gorm.DB) error {
