@@ -58,8 +58,8 @@ func Login(c *gin.Context) {
 }
 
 type RegisterInput struct {
-	FirstName string `json:"first-name" binding:"required"`
-	LastName  string `json:"last-name" binding:"required"`
+	FirstName string `json:"firstName" binding:"required"`
+	LastName  string `json:"lastName" binding:"required"`
 	Password  string `json:"password" binding:"required"`
 }
 
