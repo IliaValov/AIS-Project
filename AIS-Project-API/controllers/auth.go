@@ -9,16 +9,25 @@ import (
 )
 
 func CurrentUser(c *gin.Context) {
-
-	user_id, err := token.ExtractTokenID(c)
-
+	userId, err := token.ExtractTokenID(c)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	u, err := database.GetUserByID(user_id)
+	// check whether the user has the rights to access the data
+	var user database.User
+	database.DB.Select("admin_rights").Where("id = ?", userId).Table("users").Find(&user)
+	if !user.AdminRights {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "unauthorized api call",
+		})
+		return
+	}
 
+	u, err := database.GetUserByID(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -58,43 +67,35 @@ func Login(c *gin.Context) {
 }
 
 type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
-	Name     string `json:"name" binding:"required"`
-	Role     string `json:"role" binding:"required"`
+	FirstName string `json:"first-name" binding:"required"`
+	LastName  string `json:"last-name" binding:"required"`
+	Password  string `json:"password" binding:"required"`
 }
 
 func Register(c *gin.Context) {
-
 	var input RegisterInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	u := database.User{}
-
-	u.Username = input.Username
-	u.Password = input.Password
-
-	switch input.Role {
-	case "student":
-		u.AdminRights = false
-	case "teacher":
-		u.AdminRights = true
-	default:
-		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid role"})
-		return
+	u := database.User{
+		Password:    input.Password,
+		AdminRights: false,
 	}
-
-	_, err := u.SaveUser(input.Name)
-
+	user, err := u.SaveUser(input.FirstName, input.LastName)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "registration success"})
-
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "registration success",
+		"username": user.Username,
+	})
 }
