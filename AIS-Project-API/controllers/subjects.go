@@ -28,7 +28,17 @@ func EditGrade(c *gin.Context) {
 		Grade:     gradeInput.Grade,
 	}
 
-	grade.Edit()
+	_, err := grade.Edit()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "grade edited successfully",
+	})
 }
 
 type EnrollInput struct {

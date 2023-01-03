@@ -1,7 +1,5 @@
 package database
 
-import "fmt"
-
 type Grade struct {
 	StudentId uint    `gorm:"primaryKey"`
 	Student   Student `gorm:"foreignKey:StudentId;references:UserId;constraint:OnDelete:CASCADE"`
@@ -10,16 +8,26 @@ type Grade struct {
 	Grade     uint64  `gorm:"not null;check:grade >= 2 and grade <= 6"`
 }
 
-func (g *Grade) Edit() {
+func (g *Grade) Edit() (*Grade, error) {
 	var grade Grade
-	DB.Where("student_id = ? AND course_id = ?", g.StudentId, g.CourseId).Find(&grade)
+	err := DB.Where("student_id = ? AND course_id = ?", g.StudentId, g.CourseId).Find(&grade).Error
+	if err != nil {
+		return &Grade{}, err
+	}
 
 	if grade == (Grade{}) {
 		// has to be created
-		fmt.Println("CRETE GRADE", g)
-		DB.Create(&g)
+		err = DB.Create(&g).Error
+		if err != nil {
+			return &Grade{}, err
+		}
 	} else {
 		// has to be updated
-		DB.Update("grade", g.Grade)
+		DB.Save(&g)
+		if err != nil {
+			return &Grade{}, err
+		}
 	}
+
+	return g, nil
 }
