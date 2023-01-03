@@ -9,8 +9,8 @@ import (
 )
 
 type GradeInput struct {
-	CourseId  uint   `json:"course_id"`
-	StudentId uint   `json:"student_id"`
+	CourseId  uint   `json:"courseId"`
+	StudentId uint   `json:"studentId"`
 	Grade     uint64 `json:"grade"`
 }
 
