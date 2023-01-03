@@ -78,7 +78,17 @@ func Register(c *gin.Context) {
 	u.Username = input.Username
 	u.Password = input.Password
 
-	_, err := u.SaveUser(input.Name, input.Role)
+	switch input.Role {
+	case "student":
+		u.AdminRights = false
+	case "teacher":
+		u.AdminRights = true
+	default:
+		c.JSON(http.StatusBadRequest, gin.H{"message": "invalid role"})
+		return
+	}
+
+	_, err := u.SaveUser(input.Name)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
