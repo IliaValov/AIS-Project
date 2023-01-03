@@ -5,20 +5,55 @@ import (
 	"AIS-Project-API/services"
 	"AIS-Project-API/utils/token"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CurrentUser(c *gin.Context) {
+func GetUserById(c *gin.Context) {
+	uid, err := strconv.ParseUint(c.Param("id"), 10, 32)
 
-	user_id, err := token.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	userId := uint(uid)
+
+	adminRights, err := token.ExtractAdminRights(c)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	u, err := database.GetUserByID(user_id)
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	u, err := database.GetUserByID(userId)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+}
+
+func CurrentUser(c *gin.Context) {
+	userId, err := token.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
