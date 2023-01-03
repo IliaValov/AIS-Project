@@ -27,17 +27,18 @@ export class RegisterComponent implements OnInit {
   get f() { return this.form.controls; }
 
   onSubmit() {
+    console.log("submit?")
     const registerRequest: RegisterRequest = new RegisterRequest(
       this.form.value.firstName,
       this.form.value.lastName,
       this.form.value.password
     )
     this.registerService.register(registerRequest).subscribe({
-      next: () => {
-        // TODO: actions on successful request
+      next: response => {
+        console.log(response);
       },
       error: error => {
-        // TODO: actions of error
+        console.log(error);
       }
     })
   }

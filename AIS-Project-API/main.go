@@ -6,6 +6,7 @@ import (
 	"AIS-Project-API/middlewares"
 
 	"github.com/gin-gonic/gin"
+    "github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -14,6 +15,14 @@ func main() {
 	database.ConnectDataBase()
 
 	r := gin.Default()
+
+    r.Use(cors.New(cors.Config{
+        AllowOrigins: []string{"http://localhost:4200"},
+        AllowMethods: []string{"GET", "POST"},
+        AllowHeaders: []string{"*"},
+        ExposeHeaders: []string{"*"},
+        AllowCredentials: true,
+    })) 
 
 	public := r.Group("/api")
 
