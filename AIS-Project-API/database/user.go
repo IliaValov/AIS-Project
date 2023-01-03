@@ -13,8 +13,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"size:255;not null;unique" json:"username"`
-	Password string `gorm:"size:255;not null;" json:"password"`
+	Username    string `gorm:"size:255;not null;unique" json:"username"`
+	Password    string `gorm:"size:255;not null;" json:"password"`
+	AdminRights bool   `gorm:"not null" json:"admin-rights"`
 }
 
 func GetUserByID(uid uint) (User, error) {
@@ -67,7 +68,7 @@ func LoginCheck(username string, password string) (string, error) {
 
 }
 
-func (u *User) SaveUser(name, role string) (*User, error) {
+func (u *User) SaveUser(name string) (*User, error) {
 	var err error
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
@@ -85,11 +86,10 @@ func (u *User) SaveUser(name, role string) (*User, error) {
 		return &User{}, err
 	}
 
-	switch role {
-	case "student":
+	if !u.AdminRights {
 		student := Student{User: *u, Name: name}
 		err = DB.Create(&student).Error
-	case "teacher":
+	} else {
 		teacher := Teacher{User: *u, Name: name}
 		err = DB.Create(&teacher).Error
 	}
