@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
+import {CookieService} from 'ngx-cookie-service';
 
 import { AccountService } from 'src/app/services/account.service';
+import { JwtDecodeService } from 'src/app/services/jwt-decode.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +21,9 @@ export class LoginComponent implements OnInit {
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
-      private accountService: AccountService
+      private accountService: AccountService,
+      private cookieService: CookieService,
+      private jwtDecodeService: JwtDecodeService
   ) { }
 
   ngOnInit() {
@@ -41,11 +45,19 @@ export class LoginComponent implements OnInit {
       this.accountService.login(this.f['username'].value, this.f['password'].value)
             .pipe(first())
             .subscribe({
-                next: () => {
-                    // TODO: on success
+                next: token => {
+                    // on success
+                    this.cookieService.set('user-jwt', token);
+
+                    const role: boolean = this.jwtDecodeService.getDecodedAccessToken(token)['AdminRights'];
+                    if (role) {
+                        this.router.navigate(['/home/teacher']);
+                    } else {
+                        this.router.navigate(['/home/student']);
+                    }
                 },
                 error: error => {
-                    // TODO: on error
+                    // on error
                 }
             });
   }
