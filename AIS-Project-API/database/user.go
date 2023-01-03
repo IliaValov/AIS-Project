@@ -3,6 +3,7 @@ package database
 import (
 	"AIS-Project-API/utils/token"
 	"errors"
+	"fmt"
 	"html"
 	"strings"
 
@@ -14,7 +15,6 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"size:255;not null;unique" json:"username"`
 	Password string `gorm:"size:255;not null;" json:"password"`
-	Role     string `gorm:"size:255;not null;"`
 }
 
 func GetUserByID(uid uint) (User, error) {
@@ -67,7 +67,7 @@ func LoginCheck(username string, password string) (string, error) {
 
 }
 
-func (u *User) SaveUser() (*User, error) {
+func (u *User) SaveUser(name, role string) (*User, error) {
 	var err error
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
@@ -80,12 +80,23 @@ func (u *User) SaveUser() (*User, error) {
 	//remove spaces in username
 	u.Username = html.EscapeString(strings.TrimSpace(u.Username))
 
-	// Role field may change when the db relations are finished.
-	u.Role = "Default"
-
 	err = DB.Model(&User{}).Create(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+
+	switch role {
+	case "student":
+		student := Student{User: *u, Name: name}
+		err = DB.Create(&student).Error
+	case "teacher":
+		teacher := Teacher{User: *u, Name: name}
+		err = DB.Create(&teacher).Error
+	}
 
 	if err != nil {
+		errDrop := DB.Delete(&u)
+		err = fmt.Errorf("%w; %s", err, errDrop.Error)
 		return &User{}, err
 	}
 

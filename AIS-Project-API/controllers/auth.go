@@ -60,6 +60,8 @@ func Login(c *gin.Context) {
 type RegisterInput struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Role     string `json:"role" binding:"required"`
 }
 
 func Register(c *gin.Context) {
@@ -76,7 +78,7 @@ func Register(c *gin.Context) {
 	u.Username = input.Username
 	u.Password = input.Password
 
-	_, err := u.SaveUser()
+	_, err := u.SaveUser(input.Name, input.Role)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
