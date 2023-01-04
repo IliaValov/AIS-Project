@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
+import { SubjectResponse } from 'src/app/dto/responses/subject-response';
 import { SubjectService } from 'src/app/services/subject.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { SubjectService } from 'src/app/services/subject.service';
   styleUrls: ['./students-home.component.css']
 })
 export class StudentsHomeComponent implements OnInit {
-  subjects: Subject[] = [];
+  subjects: SubjectResponse = new SubjectResponse();
 
   constructor(private subjectService: SubjectService,
               private cookieService: CookieService) {}
@@ -22,7 +23,7 @@ export class StudentsHomeComponent implements OnInit {
     const jwtService = new JwtHelperService();
     const studentId: string = jwtService.decodeToken(this.cookieService.get("user-jwt"))['user_id'];
     this.subjectService.getStudentGrades(studentId).subscribe({
-      next: response => {
+      next: (response: SubjectResponse) => {
         this.subjects = response
       },
       error: error => {
@@ -30,9 +31,4 @@ export class StudentsHomeComponent implements OnInit {
       }
     });
   }
-}
-
-export class Subject {
-  name: string = "";
-//  teacher: Teacher = new Teacher();
 }
