@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"AIS-Project-API/database"
+	"AIS-Project-API/services"
 	"AIS-Project-API/utils/token"
 	"fmt"
 	"net/http"
@@ -11,16 +12,15 @@ import (
 )
 
 type GradeInput struct {
-	CourseId  uint   `json:"courseId"`
-	StudentId uint   `json:"studentId"`
-	Grade     uint64 `json:"grade"`
+	CourseId  uint   `json:"courseId" binding:"required,gte=1"`
+	StudentId uint   `json:"studentId" binding:"required,gte=1"`
+	Grade     uint64 `json:"grade" binding:"required,gte=2,lte=6"`
 }
 
 func EditGrade(c *gin.Context) {
 	var gradeInput GradeInput
 
-	if err := c.ShouldBindJSON(&gradeInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if services.ValidateInput(c, &gradeInput) != nil {
 		return
 	}
 
@@ -44,8 +44,8 @@ func EditGrade(c *gin.Context) {
 }
 
 type EnrollInput struct {
-	StudentId string `json:"studentId" binding:"required"`
-	CourseId  string `json:"courseId" binding:"required"`
+	StudentId string `json:"studentId" binding:"required,gte=1"`
+	CourseId  string `json:"courseId" binding:"required,gte=1"`
 }
 
 func EnrollCourse(c *gin.Context) {
@@ -58,10 +58,7 @@ func EnrollCourse(c *gin.Context) {
 	}
 
 	var enrollInput EnrollInput
-	if err := c.ShouldBindJSON(&enrollInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+	if services.ValidateInput(c, &enrollInput) != nil {
 		return
 	}
 
