@@ -18,7 +18,14 @@ export class GradesComponent implements OnInit {
 
   ngOnInit(): void {
     this.courseId = Number(this.actRoute.snapshot.paramMap.get('id'));
-    this.gradesService.getStudentsperCourse(this.courseId);
+    this.gradesService.getStudentsperCourse(this.courseId).subscribe({
+      next: (response: StudentResponse)  => {
+          this.students = response;
+      },
+      error: error => {
+        console.log(error);
+      }
+    });
   }
 
   routeToEditFormGrade(studentId: number) {
