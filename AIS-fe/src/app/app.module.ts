@@ -9,6 +9,8 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { StudentsHomeComponent } from './components/students-home/students-home.component';
 import { TeachersHomeComponent } from './components/teachers-home/teachers-home.component';
+import { GradesComponent } from './components/grades/grades.component';
+import { EditGradeComponent } from './components/edit-grade/edit-grade.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { TeachersHomeComponent } from './components/teachers-home/teachers-home.
     RegisterComponent,
     LoginComponent,
     StudentsHomeComponent,
-    TeachersHomeComponent
+    TeachersHomeComponent,
+    GradesComponent,
+    EditGradeComponent
   ],
   imports: [
     BrowserModule,

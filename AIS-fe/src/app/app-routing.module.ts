@@ -6,6 +6,8 @@ import { StudentsHomeComponent } from './components/students-home/students-home.
 import { AuthGuard } from './guards/auth.guard';
 import { TeachersHomeComponent } from './components/teachers-home/teachers-home.component';
 import { RoleGuard } from './guards/role.guard';
+import { GradesComponent } from './components/grades/grades.component';
+import { EditGradeComponent } from './components/edit-grade/edit-grade.component';
 
 const routes: Routes = [
   {
@@ -24,6 +26,22 @@ const routes: Routes = [
   {
     path: 'home/teacher',
     component: TeachersHomeComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      expectedRole: 'TEACHER'
+    }
+  },
+  {
+    path: 'home/teacher/course/:id',
+    component: GradesComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      expectedRole: 'TEACHER'
+    }
+  },
+  {
+    path: 'home/teacher/course/:courseId/student/:studentId/edit-grade',
+    component: EditGradeComponent,
     canActivate: [AuthGuard, RoleGuard],
     data: {
       expectedRole: 'TEACHER'

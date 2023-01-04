@@ -13,7 +13,6 @@ export class RegisterService {
   constructor(private httpClient: HttpClient) {}
 
   public register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
-    console.log("Try to register :melting face");
     return this.httpClient.post<RegisterResponse>(this.registerUrl, registerRequest);
   }
 }
