@@ -18,14 +18,14 @@ export class SubjectService {
   public getStudentGrades(userId: string): Observable<SubjectResponse> {
     const url = this.gradesUrl.replace('{studentId}', userId);
     return this.httpClient.get<SubjectResponse>(url, {
-      headers: { 'Set-Cookie': this.cookieService.get('user-jwt') }
+      headers: { 'Authorization': 'Bearer ' + this.cookieService.get('user-jwt') }
     });
   }
 
   public getTeacherSubjects(userId: string): Observable<TeacherSubjectResponse> {
     const url = this.teacherSubjectsUrl.replace('{teacherId}', userId);
     return this.httpClient.get<TeacherSubjectResponse>(url, {
-      headers: { 'Set-Cookie:': this.cookieService.get('user-jwt') }
+      headers: { 'Authorization': 'Bearer ' + this.cookieService.get('user-jwt') }
     })
   }
 }
