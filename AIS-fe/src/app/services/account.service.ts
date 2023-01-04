@@ -12,7 +12,6 @@ export class AccountService {
   constructor(private httpClient: HttpClient) { }
 
   public login(username: String, password: String): Observable<any> {
-    console.log("Try to login");
     return this.httpClient.post(this.loginUrl, { username, password });
   }
 }
