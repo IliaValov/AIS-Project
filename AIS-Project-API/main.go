@@ -5,8 +5,8 @@ import (
 	"AIS-Project-API/database"
 	"AIS-Project-API/middlewares"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-    "github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -16,16 +16,19 @@ func main() {
 
 	r := gin.Default()
 
-    r.Use(cors.New(cors.Config{
-        AllowOrigins: []string{"http://localhost:4200"},
-        AllowMethods: []string{"GET", "POST"},
-        AllowHeaders: []string{"*"},
-        ExposeHeaders: []string{"*"},
-        AllowCredentials: true,
-    })) 
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4200"},
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
+		AllowCredentials: true,
+	}))
 
 	public := r.Group("/api")
 
+	public.GET("/teacher/grades", controllers.TeacherGrades)
+	public.GET("/:subjectId/students", controllers.StudentsPerCourse)
+	public.GET("/student/:studentId/grades", controllers.StudentGrades)
 	public.POST("/register", controllers.Register)
 	public.POST("/login", controllers.Login)
 
