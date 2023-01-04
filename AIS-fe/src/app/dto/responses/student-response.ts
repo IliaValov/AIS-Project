@@ -1,10 +1,18 @@
 export class StudentResponse {
-    data: Student[] = [];
+    data: StudentWithGrade[] = [];
+}
+
+export interface Grade {
+    StudentId: number,
+    Grade: number
 }
 
 export interface Student {
-    UserId: number,
-    FirstName: string,
-    LastName: string,
-    Grade: number
+    FirstName: string;
+    LastName: string;
+}
+
+export interface StudentWithGrade {
+    Student: Student,
+    Grade: Grade
 }

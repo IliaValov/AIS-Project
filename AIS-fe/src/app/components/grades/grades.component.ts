@@ -20,7 +20,8 @@ export class GradesComponent implements OnInit {
     this.courseId = Number(this.actRoute.snapshot.paramMap.get('id'));
     this.gradesService.getStudentsperCourse(this.courseId).subscribe({
       next: (response: StudentResponse)  => {
-          this.students = response;
+        console.log(response);
+        this.students = response;
       },
       error: error => {
         console.log(error);
