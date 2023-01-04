@@ -29,9 +29,6 @@ func main() {
 	public.GET("/teacher/grades", controllers.TeacherGrades)
 	public.GET("/teacher/:teacherId/courses", controllers.CoursesPerTeacher)
 
-	public.GET("/:subjectId/students", controllers.StudentsPerCourse)
-	public.GET("/student/:studentId/grades", controllers.StudentGrades)
-
 	public.POST("/register", controllers.Register)
 	public.POST("/login", controllers.Login)
 
@@ -45,7 +42,6 @@ func main() {
 	protectedSubjects.POST("/editgrade", controllers.EditGrade)
 	public.GET("/:subjectId/students", controllers.StudentsPerCourse)
 	public.GET("/student/:studentId/grades", controllers.StudentGrades)
-	public.GET("/teacher/grades", controllers.TeacherGrades)
 
 	subject := r.Group("/api/subject")
 	subject.Use(middlewares.JwtAuthMiddleware())
