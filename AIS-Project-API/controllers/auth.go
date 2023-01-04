@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"AIS-Project-API/database"
+	"AIS-Project-API/services"
 	"AIS-Project-API/utils/token"
 	"net/http"
 
@@ -28,16 +29,16 @@ func CurrentUser(c *gin.Context) {
 }
 
 type LoginInput struct {
-	Username string `json:"username" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Username string `json:"username" binding:"required,lte=20"`
+	Password string `json:"password" binding:"required,lte=20"`
 }
 
 func Login(c *gin.Context) {
 
 	var input LoginInput
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	err := services.ValidateInput(c, &input)
+	if err != nil {
 		return
 	}
 
@@ -58,18 +59,16 @@ func Login(c *gin.Context) {
 }
 
 type RegisterInput struct {
-	FirstName string `json:"firstName" binding:"required"`
-	LastName  string `json:"lastName" binding:"required"`
-	Password  string `json:"password" binding:"required"`
+	FirstName string `json:"firstName" binding:"required,lte=20"`
+	LastName  string `json:"lastName" binding:"required,lte=20"`
+	Password  string `json:"password" binding:"required,lte=20"`
 }
 
 func Register(c *gin.Context) {
 	var input RegisterInput
 
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+	err := services.ValidateInput(c, &input)
+	if err != nil {
 		return
 	}
 
