@@ -16,7 +16,7 @@ export class TeachersHomeComponent implements OnInit {
     private cookieService: CookieService) {}
 
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    this.getTeacherCourses();
   }
 
   getTeacherCourses() {

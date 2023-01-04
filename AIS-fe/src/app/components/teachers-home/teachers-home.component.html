@@ -26,14 +26,14 @@
         <div class="col-md-5">
         <table class="table">
             <tr>
-            <th scope="col" class="itemId">Course ID</th>
-            
-            <th scope="col"> <button class="btn btn-info btn-block my-4" style="background-color: powderblue" #myButton
-                (click)="routeToStudentGrades()"> CourseName </button></th>
+            <th scope="col">Course ID</th>
+            <th scope="col">CourseName</th>
+
             </tr>
             <tr *ngFor="let item of subjects.data">
             <td>{{item.ID}}</td>
-            <td>{{item.Name}}</td>
+            <td><button class="btn btn-info btn-block my-4" style="background-color: powderblue" #myButton
+                (click)="routeToStudentGrades()"> {{item.Name}} </button></td>
             </tr>
         </table>
     
