@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
                     this.cookieService.set('user-jwt', response['token']);
                     //localStorage.setItem("jwt", token)
                     const jwtService: JwtHelperService = new JwtHelperService();
-                    const role: boolean = jwtService.decodeToken(response['token'])['admin-rights'];
+                    const role: boolean = jwtService.decodeToken(response['token'])['user_admin_rights'];
                     if (role) {
                         this.router.navigate(['/home/teacher']);
                     } else {

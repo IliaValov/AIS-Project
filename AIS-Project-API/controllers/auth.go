@@ -20,8 +20,6 @@ func GetUserById(c *gin.Context) {
 		return
 	}
 
-	userId := uint(uid)
-
 	adminRights, err := token.ExtractAdminRights(c)
 
 	if err != nil {
@@ -35,6 +33,8 @@ func GetUserById(c *gin.Context) {
 		})
 		return
 	}
+
+	userId := uint(uid)
 
 	u, err := database.GetUserByID(userId)
 
@@ -60,7 +60,7 @@ func CurrentUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "success", "data": u})
+	c.JSON(http.StatusOK, gin.H{"message": "success", "data": userId})
 }
 
 type LoginInput struct {

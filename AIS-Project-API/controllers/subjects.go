@@ -18,6 +18,20 @@ type GradeInput struct {
 }
 
 func EditGrade(c *gin.Context) {
+	adminRights, err := token.ExtractAdminRights(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
 	var gradeInput GradeInput
 
 	if services.ValidateInput(c, &gradeInput) != nil {
@@ -30,7 +44,7 @@ func EditGrade(c *gin.Context) {
 		Grade:     gradeInput.Grade,
 	}
 
-	_, err := grade.Edit()
+	_, err = grade.Edit()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -49,6 +63,20 @@ type EnrollInput struct {
 }
 
 func EnrollCourse(c *gin.Context) {
+	adminRights, err := token.ExtractAdminRights(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
 	teacherId, err := token.ExtractTokenID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -98,6 +126,20 @@ func EnrollCourse(c *gin.Context) {
 }
 
 func TeacherGrades(c *gin.Context) {
+	adminRights, err := token.ExtractAdminRights(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
 	user_id, err := token.ExtractTokenID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -137,6 +179,20 @@ func TeacherGrades(c *gin.Context) {
 
 // Returns array of Students that are enrolled in the subject passed in the url
 func StudentsPerCourse(c *gin.Context) {
+	adminRights, err := token.ExtractAdminRights(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
 	subjectId, err := strconv.ParseUint(c.Param("subjectId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
