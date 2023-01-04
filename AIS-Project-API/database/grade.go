@@ -23,7 +23,7 @@ func (g *Grade) Edit() (*Grade, error) {
 		}
 	} else {
 		// has to be updated
-		DB.Save(&g)
+		err = DB.Save(&g).Error
 		if err != nil {
 			return &Grade{}, err
 		}

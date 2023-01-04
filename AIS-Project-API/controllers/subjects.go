@@ -11,14 +11,13 @@ import (
 )
 
 type GradeInput struct {
-	CourseId  uint   `json:"courseId" binding:"required,gte=1"`
-	StudentId uint   `json:"studentId" binding:"required,gte=1"`
-	Grade     uint64 `json:"grade" binding:"required,gte=2,lte=6"`
+	CourseId  string `json:"courseId" binding:"required,gte=1"`
+	StudentId string `json:"studentId" binding:"required,gte=1"`
+	Grade     string `json:"grade" binding:"required"`
 }
 
 func EditGrade(c *gin.Context) {
 	adminRights, err := token.ExtractAdminRights(c)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,10 +36,34 @@ func EditGrade(c *gin.Context) {
 		return
 	}
 
+	studentId, err := strconv.ParseInt(gradeInput.StudentId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	courseId, err := strconv.ParseInt(gradeInput.CourseId, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	gradeValue, err := strconv.ParseInt(gradeInput.Grade, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	grade := database.Grade{
-		StudentId: gradeInput.StudentId,
-		CourseId:  gradeInput.CourseId,
-		Grade:     gradeInput.Grade,
+		StudentId: uint(studentId),
+		CourseId:  uint(courseId),
+		Grade:     uint64(gradeValue),
 	}
 
 	teacherId, err := token.ExtractTokenID(c)
@@ -52,7 +75,7 @@ func EditGrade(c *gin.Context) {
 	}
 
 	var enrollment database.Enrollment
-	if err := database.DB.Where("teacherId = ? AND courseId = ? AND studentId = ?",
+	if err := database.DB.Where("teacher_id = ? AND course_id = ? AND student_id = ?",
 		teacherId, grade.CourseId, grade.StudentId).Find(&enrollment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
