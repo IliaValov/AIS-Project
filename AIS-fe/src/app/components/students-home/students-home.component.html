@@ -37,7 +37,11 @@
         <table class="table">
           <tr>
             <th scope="col">Course Name</th>
-            <th scope="col">Teacher Name</th>
+            <th scope="col">Grade</th>
+          </tr>
+          <tr *ngFor="let item of subjects.data">
+            <td>{{item.CourseName}}</td>
+            <td>{{item.GradeNumber}}</td>
           </tr>
         </table>
   

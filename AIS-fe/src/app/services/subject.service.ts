@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CookieOptions, CookieService } from 'ngx-cookie-service';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { SubjectResponse } from '../dto/responses/subject-response';
 
@@ -16,8 +16,7 @@ export class SubjectService {
   public getStudentGrades(userId: string): Observable<SubjectResponse> {
     const url = this.gradesUrl.replace('{studentId}', userId);
     return this.httpClient.get<SubjectResponse>(url, {
-      headers: { 'SET-COOKIE': this.cookieService.get('user-jwt') },
-      withCredentials: true
+      headers: { 'Set-Cookie': this.cookieService.get('user-jwt') }
     });
   }
 }
