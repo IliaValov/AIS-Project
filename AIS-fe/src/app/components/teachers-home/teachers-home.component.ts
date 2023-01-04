@@ -35,4 +35,8 @@ export class TeachersHomeComponent implements OnInit {
   routeToStudentGrades() {
     // TODO: navigate to table with students and their grades
   }
+
+  deleteCookie() {
+    this.cookieService.delete('user-jwt');
+  }
 }

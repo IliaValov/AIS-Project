@@ -31,4 +31,8 @@ export class StudentsHomeComponent implements OnInit {
       }
     });
   }
+
+  deleteCookie() {
+      this.cookieService.delete('user-jwt');
+  }
 }
