@@ -8,7 +8,7 @@ import { SubjectResponse } from '../dto/responses/subject-response';
   providedIn: 'root'
 })
 export class SubjectService {
-  private gradesUrl: string = 'http://localhost:8080/api/student/{studentId}/grades'
+  private gradesUrl: string = 'http://localhost:8080/api/subjects/student/{studentId}/grades';
 
   constructor(private httpClient: HttpClient,
               private cookieService: CookieService) { }
