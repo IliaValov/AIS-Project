@@ -26,9 +26,6 @@ func main() {
 
 	public := r.Group("/api")
 
-	public.GET("/teacher/grades", controllers.TeacherGrades)
-	public.GET("/teacher/:teacherId/courses", controllers.CoursesPerTeacher)
-
 	public.POST("/register", controllers.Register)
 	public.POST("/login", controllers.Login)
 
@@ -40,8 +37,10 @@ func main() {
 	protectedSubjects := r.Group("/api/subjects")
 	protectedSubjects.Use(middlewares.JwtAuthMiddleware())
 	protectedSubjects.POST("/editgrade", controllers.EditGrade)
-	public.GET("/:subjectId/students", controllers.StudentsPerCourse)
-	public.GET("/student/:studentId/grades", controllers.StudentGrades)
+	protectedSubjects.GET("/:subjectId/students", controllers.StudentsPerCourse)
+	protectedSubjects.GET("/student/:studentId/grades", controllers.StudentGrades)
+	protectedSubjects.GET("/teacher/grades", controllers.TeacherGrades)
+	protectedSubjects.GET("/teacher/:teacherId/courses", controllers.CoursesPerTeacher)
 
 	subject := r.Group("/api/subject")
 	subject.Use(middlewares.JwtAuthMiddleware())
