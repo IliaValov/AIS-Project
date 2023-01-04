@@ -1,15 +1,12 @@
 package database
 
-import "github.com/jinzhu/gorm"
-
 type Enrollment struct {
-	gorm.Model
-	StudentId uint
+	StudentId uint    `gorm:"primaryKey"`
 	Student   Student `gorm:"foreignKey:StudentId;references:UserId;constraint:OnDelete:CASCADE"`
-	TeacherId uint
+	TeacherId uint    `gorm:"primaryKey"`
 	Teacher   Teacher `gorm:"foreignKey:TeacherId;references:UserId;constraint:OnDelete:CASCADE"`
-	CourseId  uint
-	Course    Course `gorm:"foreignKey:CourseId;references:ID;constraint:OnDelete:CASCADE"`
+	CourseId  uint    `gorm:"primaryKey"`
+	Course    Course  `gorm:"foreignKey:CourseId;references:ID;constraint:OnDelete:CASCADE"`
 }
 
 func (e *Enrollment) Enroll() (*Enrollment, error) {

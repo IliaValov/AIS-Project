@@ -44,6 +44,30 @@ func EditGrade(c *gin.Context) {
 		Grade:     gradeInput.Grade,
 	}
 
+	teacherId, err := token.ExtractTokenID(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	var enrollment database.Enrollment
+	if err := database.DB.Where("teacherId = ? AND courseId = ? AND studentId = ?",
+		teacherId, grade.CourseId, grade.StudentId).Find(&enrollment).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	if enrollment == (database.Enrollment{}) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "teacher is unauthorized to edit this grade",
+		})
+		return
+	}
+
 	_, err = grade.Edit()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
