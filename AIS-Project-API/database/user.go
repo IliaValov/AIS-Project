@@ -59,7 +59,7 @@ func LoginCheck(username string, password string) (string, error) {
 		return "", err
 	}
 
-	token, err := token.GenerateToken(u.ID)
+	token, err := token.GenerateToken(u.ID, u.AdminRights)
 
 	if err != nil {
 		return "", err
@@ -72,7 +72,7 @@ func LoginCheck(username string, password string) (string, error) {
 func (u *User) SaveUser(firstName, lastName string) (*User, error) {
 	var err error
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 15)
 	if err != nil {
 		return &User{}, err
 	}
