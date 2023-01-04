@@ -66,7 +66,7 @@ func EditGrade(c *gin.Context) {
 		Grade:     uint64(gradeValue),
 	}
 
-	_, err = token.ExtractTokenID(c)
+	teacherId, err := token.ExtractTokenID(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -74,21 +74,21 @@ func EditGrade(c *gin.Context) {
 		return
 	}
 
-	// var enrollment database.Enrollment
-	// if err := database.DB.Where("teacher_id = ? AND course_id = ? AND student_id = ?",
-	// 	teacherId, grade.CourseId, grade.StudentId).Find(&enrollment).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": err.Error(),
-	// 	})
-	// 	return
-	// }
+	var enrollment database.Enrollment
+	if err := database.DB.Where("teacher_id = ? AND course_id = ? AND student_id = ?",
+		teacherId, grade.CourseId, grade.StudentId).Find(&enrollment).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	// if enrollment == (database.Enrollment{}) {
-	// 	c.JSON(http.StatusBadRequest, gin.H{
-	// 		"error": "teacher is unauthorized to edit this grade",
-	// 	})
-	// 	return
-	// }
+	if enrollment == (database.Enrollment{}) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "teacher is unauthorized to edit this grade",
+		})
+		return
+	}
 
 	_, err = grade.Edit()
 	if err != nil {
