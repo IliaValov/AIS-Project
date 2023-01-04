@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { StudentsHomeComponent } from './components/students-home/students-home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { TeachersHomeComponent } from './components/teachers-home/teachers-home.component';
+import { RoleGuard } from './guards/role.guard';
 
 const routes: Routes = [
   {
@@ -23,7 +24,10 @@ const routes: Routes = [
   {
     path: 'home/teacher',
     component: TeachersHomeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      expectedRole: 'TEACHER'
+    }
   }  
 ];
 
