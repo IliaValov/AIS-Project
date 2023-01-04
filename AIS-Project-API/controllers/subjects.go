@@ -177,6 +177,22 @@ func TeacherGrades(c *gin.Context) {
 	// c.JSON(http.StatusOK, gin.H{"data": teacherGrades})
 }
 
+// за учител връща неговите курсове?
+func CoursesPerTeacher(c *gin.Context) {
+	teacherId, err := strconv.ParseUint(c.Param("teacherId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
+		return
+	}
+
+	var courses []database.Course
+	database.DB.Where("teacher_id = ?", teacherId).Find(&courses)
+
+	c.JSON(http.StatusOK, gin.H{"data": courses})
+}
+
+// for teacher's course return students and grades
+
 // Returns array of Students that are enrolled in the subject passed in the url
 func StudentsPerCourse(c *gin.Context) {
 	adminRights, err := token.ExtractAdminRights(c)
@@ -195,21 +211,15 @@ func StudentsPerCourse(c *gin.Context) {
 
 	subjectId, err := strconv.ParseUint(c.Param("subjectId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err})
 		return
 	}
 
 	var enrollments []database.Enrollment
-	if err := database.DB.Where("course_id = ?", subjectId).Find(&enrollments); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting enrollments from database: ": err.Error})
-		return
-	}
+	database.DB.Where("course_id = ?", subjectId).Find(&enrollments)
 
 	var students []database.Student
-	if err := database.DB.Find(&students); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting students from database: ": err.Error})
-		return
-	}
+	database.DB.Find(&students)
 
 	var foundStudents []database.Student
 	for _, currentEnrollments := range enrollments {
@@ -232,16 +242,10 @@ func StudentGrades(c *gin.Context) {
 	}
 
 	var grades []database.Grade
-	if err := database.DB.Where("student_id = ?", studentId).Find(&grades); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting grades for student: ": err.Error})
-		return
-	}
+	database.DB.Where("student_id = ?", studentId).Find(&grades)
 
 	var courses []database.Course
-	if err := database.DB.Find(&courses); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error whole getting courses from database: ": err.Error})
-		return
-	}
+	database.DB.Find(&courses)
 
 	type ResultGrade struct {
 		CourseName  string
