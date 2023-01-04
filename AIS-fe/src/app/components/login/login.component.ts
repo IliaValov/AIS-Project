@@ -3,9 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import {CookieService} from 'ngx-cookie-service';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 import { AccountService } from 'src/app/services/account.service';
-import { JwtDecodeService } from 'src/app/services/jwt-decode.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,6 @@ export class LoginComponent implements OnInit {
       private router: Router,
       private accountService: AccountService,
       private cookieService: CookieService,
-      private jwtDecodeService: JwtDecodeService
   ) { }
 
   ngOnInit() {
@@ -44,25 +44,21 @@ export class LoginComponent implements OnInit {
 
       this.accountService.login(this.f['username'].value, this.f['password'].value)
             .pipe(first())
-            .subscribe({
-                next: token => {
-                    // on success
-                    console.log("here is token");
-                    console.log(token);
-                    this.cookieService.set('user-jwt', token);
+            .subscribe(
+                (response: {token:string}) => {
+                    this.cookieService.set('user-jwt', response['token']);
                     //localStorage.setItem("jwt", token)
-
-                    console.log(this.jwtDecodeService.getDecodedAccessToken(token));
-                    const role: boolean = this.jwtDecodeService.getDecodedAccessToken(token)['admin-rights'];
+                    const jwtService: JwtHelperService = new JwtHelperService();
+                    const role: boolean = jwtService.decodeToken(response['token'])['admin-rights'];
                     if (role) {
                         this.router.navigate(['/home/teacher']);
                     } else {
                         this.router.navigate(['/home/student']);
-                    }
+                    }       
                 },
-                error: error => {
-                    // on error
+                (error: HttpErrorResponse) => {
+                    console.log(error);
                 }
-            });
+            );
   }
 }
