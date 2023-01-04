@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
-import { JwtDecodeService } from 'src/app/services/jwt-decode.service';
 import { SubjectService } from 'src/app/services/subject.service';
 
 @Component({
@@ -12,7 +12,6 @@ export class StudentsHomeComponent implements OnInit {
   subjects: Subject[] = [];
 
   constructor(private subjectService: SubjectService,
-              private jwtService: JwtDecodeService,
               private cookieService: CookieService) {}
 
   ngOnInit(): void {
@@ -20,7 +19,8 @@ export class StudentsHomeComponent implements OnInit {
   }
 
   getStudentCourses() {
-    const studentId: string = this.jwtService.getDecodedAccessToken(this.cookieService.get("user-jwt"))['user_id'];
+    const jwtService = new JwtHelperService();
+    const studentId: string = jwtService.decodeToken(this.cookieService.get("user-jwt"))['user_id'];
     this.subjectService.getStudentGrades(studentId).subscribe({
       next: response => {
         this.subjects = response
