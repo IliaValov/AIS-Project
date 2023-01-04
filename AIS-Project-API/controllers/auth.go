@@ -96,7 +96,7 @@ func Login(c *gin.Context) {
 type RegisterInput struct {
 	FirstName string `json:"firstName" binding:"required,lte=20"`
 	LastName  string `json:"lastName" binding:"required,lte=20"`
-	Password  string `json:"password" binding:"required,lte=20"`
+	Password  string `json:"password" binding:"required,gte=6,lte=20"`
 }
 
 func Register(c *gin.Context) {
