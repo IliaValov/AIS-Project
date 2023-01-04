@@ -27,6 +27,8 @@ func main() {
 	public := r.Group("/api")
 
 	public.GET("/teacher/grades", controllers.TeacherGrades)
+	public.GET("/teacher/:teacherId/courses", controllers.CoursesPerTeacher)
+
 	public.GET("/:subjectId/students", controllers.StudentsPerCourse)
 	public.GET("/student/:studentId/grades", controllers.StudentGrades)
 	public.POST("/register", controllers.Register)
