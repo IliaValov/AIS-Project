@@ -37,4 +37,8 @@ export class TeachersHomeComponent implements OnInit {
   routeToStudentGrades(id: string) {
     this.router.navigate([`/home/teacher/course/${id}`]);
   }
+
+  deleteCookie() {
+    this.cookieService.delete('user-jwt');
+  }
 }
