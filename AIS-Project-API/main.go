@@ -4,15 +4,23 @@ import (
 	"AIS-Project-API/controllers"
 	"AIS-Project-API/database"
 	"AIS-Project-API/middlewares"
+	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
 
 	println("Starting...")
 	database.ConnectDataBase()
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	r := gin.Default()
 
@@ -44,5 +52,5 @@ func main() {
 	protectedSubjects.POST("/joinsubject", controllers.EnrollCourse)
 	protectedSubjects.GET("/:subjectId/students/notenrolled", controllers.NotEnrolled)
 
-	r.Run(":8080")
+	r.RunTLS(":8080", os.Getenv("CERT_PATH"), os.Getenv("CERT_PRIVATE_KEY_PAHT"))
 }
