@@ -10,13 +10,13 @@ import { StudentResponse } from '../dto/responses/student-response';
 })
 export class GradesService {
   private teacherCourseUrl: string = 'http://localhost:8080/api/subjects/{subjectId}/students'
+  private studentsWithGradesPerCourse: string = 'http://localhost:8080/api/subjects/teacher/course/{courseId}/students/grades'
   private editGradeUrl: string = 'http://localhost:8080/api/subjects/editgrade'
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService) {}
 
   public getStudentsperCourse(courseId: number): Observable<StudentResponse> {
-    console.log("try to ...")
-    const url = this.teacherCourseUrl.replace('{subjectId}', courseId.toString());
+    const url = this.studentsWithGradesPerCourse.replace('{courseId}', courseId.toString());
     return this.httpClient.get<StudentResponse>(url, {
       headers: { 'Authorization': 'Bearer ' + this.cookieService.get('user-jwt') }
     });

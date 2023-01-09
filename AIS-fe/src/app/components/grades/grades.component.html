@@ -33,11 +33,11 @@
 
             </tr>
             <tr *ngFor="let item of students.data">
-            <td>{{item.UserId}}</td>
-            <td>{{item.FirstName}}</td>
-            <td>{{item.LastName}}</td>
+            <td>{{item.Grade.StudentId}}</td>
+            <td>{{item.Student.FirstName}}</td>
+            <td>{{item.Student.LastName}}</td>
             <td><button class="btn btn-info btn-block my-4" style="background-color: powderblue" #myButton
-                (click)="routeToEditFormGrade(item.UserId)"> {{item.Grade}} </button></td>
+                (click)="routeToEditFormGrade(item.Grade.StudentId)"> {{item.Grade.Grade}} </button></td>
             </tr>
         </table>
     
