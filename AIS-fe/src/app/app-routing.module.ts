@@ -8,6 +8,7 @@ import { TeachersHomeComponent } from './components/teachers-home/teachers-home.
 import { RoleGuard } from './guards/role.guard';
 import { GradesComponent } from './components/grades/grades.component';
 import { EditGradeComponent } from './components/edit-grade/edit-grade.component';
+import { EnrollmentComponent } from './components/enrollment/enrollment.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,15 @@ const routes: Routes = [
     data: {
       expectedRole: 'TEACHER'
     }
-  }  
+  },
+  {
+    path: 'home/teacher/course/:courseId/enroll',
+    component: EnrollmentComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: {
+      expectedRole: 'TEACHER'
+    }
+  }
 ];
 
 @NgModule({

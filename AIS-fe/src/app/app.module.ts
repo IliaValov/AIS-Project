@@ -11,6 +11,7 @@ import { StudentsHomeComponent } from './components/students-home/students-home.
 import { TeachersHomeComponent } from './components/teachers-home/teachers-home.component';
 import { GradesComponent } from './components/grades/grades.component';
 import { EditGradeComponent } from './components/edit-grade/edit-grade.component';
+import { EnrollmentComponent } from './components/enrollment/enrollment.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { EditGradeComponent } from './components/edit-grade/edit-grade.component
     StudentsHomeComponent,
     TeachersHomeComponent,
     GradesComponent,
-    EditGradeComponent
+    EditGradeComponent,
+    EnrollmentComponent
   ],
   imports: [
     BrowserModule,

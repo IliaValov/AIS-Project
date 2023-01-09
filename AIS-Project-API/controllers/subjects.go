@@ -282,7 +282,7 @@ func StudentsAndGradesPerCourses(c *gin.Context) {
 	}
 
 	var grades []database.Grade
-	if err := database.DB.Where("course_id = ?", courseId).Find(&grades).Error; err != nil {
+	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&grades).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Error while getting grades: ": err})
 		return
 	}
