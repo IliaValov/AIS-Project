@@ -8,7 +8,10 @@
       <div class="collapse navbar-collapse" id="navbarText">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/login" (click)="deleteCookie()">Logout</a>
+            <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Logout</a>
           </li>
         </ul>
       </div>
@@ -23,17 +26,18 @@
         <div class="col-md-5">
         <table class="table">
             <tr>
-            <th scope="col">Course ID</th>
-            <th scope="col">CourseName</th>
-            <th scope="col">Enroll student</th>
+            <th scope="col">Student ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Enroll</th>
 
             </tr>
-            <tr *ngFor="let item of subjects.data">
-            <td>{{item.ID}}</td>
+            <tr *ngFor="let item of students.data">
+            <td>{{item.StudentId}}</td>
+            <td>{{item.FirstName}}</td>
+            <td>{{item.LastName}}</td>
             <td><button class="btn btn-info btn-block my-4" style="background-color: powderblue" #myButton
-                (click)="routeToStudentGrades(item.ID)"> {{item.Name}} </button></td>
-            <td><button class="btn btn-info btn-block my-4" style="background-color: powderblue" #myButton
-              (click)="routeToNotEnrolled(item.ID)"> Enroll </button></td>
+                (click)="makeEnrollRequest(item.StudentId)"> Enroll </button></td>
             </tr>
         </table>
     
@@ -45,3 +49,4 @@
         </div>
     </div>
     </div>
+

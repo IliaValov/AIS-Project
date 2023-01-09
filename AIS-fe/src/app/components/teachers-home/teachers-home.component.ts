@@ -38,6 +38,10 @@ export class TeachersHomeComponent implements OnInit {
     this.router.navigate([`/home/teacher/course/${id}`]);
   }
 
+  routeToNotEnrolled(id: string) {
+    this.router.navigate([`home/teacher/course/${id}/enroll`]);
+  }
+
   deleteCookie() {
     this.cookieService.delete('user-jwt');
   }
