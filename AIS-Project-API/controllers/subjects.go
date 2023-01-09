@@ -384,3 +384,48 @@ func StudentGrades(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": result})
 }
+
+// Students not enrolled in course
+func NotEnrolled(c *gin.Context) {
+	adminRights, err := token.ExtractAdminRights(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !adminRights {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Unauthorized",
+		})
+		return
+	}
+
+	courseId, err := strconv.ParseUint(c.Param("subjectId"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err})
+		return
+	}
+
+	var enrollments []database.Enrollment
+	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&enrollments); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses: ": err})
+		return
+	}
+
+	var students []database.Student
+	if err := database.DB.Find(&students); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses: ": err})
+		return
+	}
+
+	var result []database.Student
+	for _, currentStudent := range students {
+		for _, currentEnrollment := range enrollments {
+			if currentStudent.UserId == currentEnrollment.StudentId {
+				result = append(result, currentStudent)
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}

@@ -42,6 +42,7 @@ func main() {
 	protectedSubjects.GET("/teacher/:teacherId/courses", controllers.CoursesPerTeacher)
 	protectedSubjects.GET("/teacher/course/:courseId/students/grades", controllers.StudentsAndGradesPerCourses)
 	protectedSubjects.POST("/joinsubject", controllers.EnrollCourse)
+	protectedSubjects.GET("/:subjectId/students/notenrolled", controllers.NotEnrolled)
 
 	r.Run(":8080")
 }
