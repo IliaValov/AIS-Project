@@ -3,6 +3,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { CookieService } from 'ngx-cookie-service';
 import { SubjectService } from 'src/app/services/subject.service';
 import { TeacherSubjectResponse } from 'src/app/dto/responses/teacher-subject-response';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-teachers-home',
@@ -13,7 +14,8 @@ export class TeachersHomeComponent implements OnInit {
   subjects: TeacherSubjectResponse = new TeacherSubjectResponse();
 
   constructor(private teacherSubjectService: SubjectService,
-    private cookieService: CookieService) {}
+    private cookieService: CookieService,
+    private router: Router) {}
 
   ngOnInit(): void {
     this.getTeacherCourses();
@@ -32,8 +34,8 @@ export class TeachersHomeComponent implements OnInit {
     });
   }
 
-  routeToStudentGrades() {
-    // TODO: navigate to table with students and their grades
+  routeToStudentGrades(id: string) {
+    this.router.navigate([`/home/teacher/course/${id}`]);
   }
 
   deleteCookie() {
