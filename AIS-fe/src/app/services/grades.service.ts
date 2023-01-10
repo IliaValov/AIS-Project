@@ -9,9 +9,9 @@ import { StudentResponse } from '../dto/responses/student-response';
   providedIn: 'root'
 })
 export class GradesService {
-  private teacherCourseUrl: string = 'http://localhost:8080/api/subjects/{subjectId}/students'
-  private studentsWithGradesPerCourse: string = 'http://localhost:8080/api/subjects/teacher/course/{courseId}/students/grades'
-  private editGradeUrl: string = 'http://localhost:8080/api/subjects/editgrade'
+  private teacherCourseUrl: string = 'https://localhost:8080/api/subjects/{subjectId}/students'
+  private studentsWithGradesPerCourse: string = 'https://localhost:8080/api/subjects/teacher/course/{courseId}/students/grades'
+  private editGradeUrl: string = 'https://localhost:8080/api/subjects/editgrade'
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService) {}
 
