@@ -430,7 +430,7 @@ func NotEnrolled(c *gin.Context) {
 	}
 
 	var enrollments []database.Enrollment
-	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&enrollments); err != nil {
+	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&enrollments).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Error while getting enrollments from database",
 		})
@@ -438,7 +438,7 @@ func NotEnrolled(c *gin.Context) {
 	}
 
 	var students []database.Student
-	if err := database.DB.Find(&students); err != nil {
+	if err := database.DB.Find(&students).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Error while getting students from database",
 		})
