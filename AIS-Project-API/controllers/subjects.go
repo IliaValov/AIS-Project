@@ -4,6 +4,7 @@ import (
 	"AIS-Project-API/database"
 	"AIS-Project-API/services"
 	"AIS-Project-API/utils/token"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -39,7 +40,7 @@ func EditGrade(c *gin.Context) {
 	studentId, err := strconv.ParseInt(gradeInput.StudentId, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
@@ -47,7 +48,7 @@ func EditGrade(c *gin.Context) {
 	courseId, err := strconv.ParseInt(gradeInput.CourseId, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
@@ -55,7 +56,7 @@ func EditGrade(c *gin.Context) {
 	gradeValue, err := strconv.ParseInt(gradeInput.Grade, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
@@ -78,14 +79,14 @@ func EditGrade(c *gin.Context) {
 	if err := database.DB.Where("teacher_id = ? AND course_id = ? AND student_id = ?",
 		teacherId, grade.CourseId, grade.StudentId).Find(&enrollment).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Error while getting enrollments from database",
 		})
 		return
 	}
 
 	if enrollment == (database.Enrollment{}) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "teacher is unauthorized to edit this grade",
+			"error": "Teacher is unauthorized to edit this grade",
 		})
 		return
 	}
@@ -93,13 +94,13 @@ func EditGrade(c *gin.Context) {
 	_, err = grade.Edit()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Error while editing the grade in the database",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "grade edited successfully",
+		"message": "Grade edited successfully",
 	})
 }
 
@@ -110,7 +111,6 @@ type EnrollInput struct {
 
 func EnrollCourse(c *gin.Context) {
 	adminRights, err := token.ExtractAdminRights(c)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -139,7 +139,7 @@ func EnrollCourse(c *gin.Context) {
 	studentId, err := strconv.ParseInt(enrollInput.StudentId, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
@@ -147,7 +147,7 @@ func EnrollCourse(c *gin.Context) {
 	courseId, err := strconv.ParseInt(enrollInput.CourseId, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
@@ -161,13 +161,13 @@ func EnrollCourse(c *gin.Context) {
 	_, err = enrollment.Enroll()
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Error while enrolling student to this course",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "enrolled successfully",
+		"message": "Enrolled successfully",
 	})
 }
 
@@ -227,13 +227,17 @@ func EnrollCourse(c *gin.Context) {
 func CoursesPerTeacher(c *gin.Context) {
 	teacherId, err := strconv.ParseUint(c.Param("teacherId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
+		})
 		return
 	}
 
 	var courses []database.Course
 	if err := database.DB.Preload("Teacher").Where("teacher_id = ?", teacherId).Find(&courses).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses from database: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting courses from database",
+		})
 		return
 	}
 
@@ -243,7 +247,6 @@ func CoursesPerTeacher(c *gin.Context) {
 // for teacher's course return students and grades
 func StudentsAndGradesPerCourses(c *gin.Context) {
 	adminRights, err := token.ExtractAdminRights(c)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -258,7 +261,9 @@ func StudentsAndGradesPerCourses(c *gin.Context) {
 
 	courseId, err := strconv.ParseUint(c.Param("courseId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
+		})
 		return
 	}
 
@@ -277,13 +282,17 @@ func StudentsAndGradesPerCourses(c *gin.Context) {
 
 	var enrollments []database.Enrollment
 	if err := database.DB.Where("teacher_id = ? AND course_id = ?", teacherId, courseId).Find(&enrollments).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting enrollments: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting enrollments from database",
+		})
 		return
 	}
 
 	var grades []database.Grade
 	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&grades).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting grades: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting grades from database",
+		})
 		return
 	}
 
@@ -318,19 +327,25 @@ func StudentsPerCourse(c *gin.Context) {
 
 	subjectId, err := strconv.ParseUint(c.Param("subjectId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
+		})
 		return
 	}
 
 	var enrollments []database.Enrollment
 	if err := database.DB.Where("course_id = ?", subjectId).Find(&enrollments).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting enrollments: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting enrollments from database",
+		})
 		return
 	}
 
 	var students []database.Student
 	if err := database.DB.Find(&students).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting students: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting students from database",
+		})
 		return
 	}
 
@@ -350,19 +365,25 @@ func StudentsPerCourse(c *gin.Context) {
 func StudentGrades(c *gin.Context) {
 	studentId, err := strconv.ParseUint(c.Param("studentId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
+		})
 		return
 	}
 
 	var grades []database.Grade
 	if err := database.DB.Where("student_id = ?", studentId).Find(&grades).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting grades: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting grades from database",
+		})
 		return
 	}
 
 	var courses []database.Course
 	if err := database.DB.Find(&courses).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting courses from database",
+		})
 		return
 	}
 
@@ -402,19 +423,25 @@ func NotEnrolled(c *gin.Context) {
 
 	courseId, err := strconv.ParseUint(c.Param("subjectId"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while parsing parameter: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
+		})
 		return
 	}
 
 	var enrollments []database.Enrollment
 	if err := database.DB.Preload("Student").Where("course_id = ?", courseId).Find(&enrollments); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting enrollments from database",
+		})
 		return
 	}
 
 	var students []database.Student
 	if err := database.DB.Find(&students); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Error while getting courses: ": err})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Error while getting students from database",
+		})
 		return
 	}
 
