@@ -4,6 +4,7 @@ import (
 	"AIS-Project-API/database"
 	"AIS-Project-API/services"
 	"AIS-Project-API/utils/token"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -12,16 +13,14 @@ import (
 
 func GetUserById(c *gin.Context) {
 	uid, err := strconv.ParseUint(c.Param("id"), 10, 32)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": fmt.Sprintf("Error while parsing parameter %s", err.Error()),
 		})
 		return
 	}
 
 	adminRights, err := token.ExtractAdminRights(c)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -35,11 +34,11 @@ func GetUserById(c *gin.Context) {
 	}
 
 	userId := uint(uid)
-
 	u, err := database.GetUserByID(userId)
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
@@ -52,11 +51,6 @@ func CurrentUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
-		return
-	}
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -83,9 +77,8 @@ func Login(c *gin.Context) {
 	u.Password = input.Password
 
 	token, err := database.LoginCheck(u.Username, u.Password)
-
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "username or password is incorrect."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username or password is incorrect"})
 		return
 	}
 
@@ -114,7 +107,7 @@ func Register(c *gin.Context) {
 	user, err := u.SaveUser(input.FirstName, input.LastName)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+			"error": "Error while saving user in the database",
 		})
 		return
 	}
