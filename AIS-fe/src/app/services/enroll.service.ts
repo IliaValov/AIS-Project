@@ -9,8 +9,8 @@ import { StudentNotEnrolledResponse } from '../dto/responses/student-not-enrolle
   providedIn: 'root'
 })
 export class EnrollService {
-  private studentsNotEnrolledUrl: string = 'http://localhost:8080/api/subjects/{subjectId}/students/notenrolled'
-  private enrollStudentUrl: string = 'http://localhost:8080/api/subjects/joinsubject'
+  private studentsNotEnrolledUrl: string = 'https://localhost:8080/api/subjects/{courseId}/students/notenrolled'
+  private enrollStudentUrl: string = 'https://localhost:8080/api/subjects/joinsubject'
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService) { }
 

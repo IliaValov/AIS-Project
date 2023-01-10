@@ -8,7 +8,7 @@ import { RegisterResponse } from '../dto/responses/register-response';
   providedIn: 'root'
 })
 export class RegisterService {
-  private registerUrl: string = 'http://localhost:8080/api/register'
+  private registerUrl: string = 'https://localhost:8080/api/register'
 
   constructor(private httpClient: HttpClient) {}
 

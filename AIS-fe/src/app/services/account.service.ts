@@ -7,7 +7,7 @@ import { Token } from '@angular/compiler';
   providedIn: 'root'
 })
 export class AccountService {
-  private loginUrl: string = 'http://localhost:8080/api/login'
+  private loginUrl: string = 'https://localhost:8080/api/login'
 
   constructor(private httpClient: HttpClient) { }
 

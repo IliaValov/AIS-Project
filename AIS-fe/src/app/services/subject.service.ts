@@ -9,8 +9,8 @@ import { TeacherSubjectResponse } from '../dto/responses/teacher-subject-respons
   providedIn: 'root'
 })
 export class SubjectService {
-  private gradesUrl: string = 'http://localhost:8080/api/subjects/student/{studentId}/grades';
-  private teacherSubjectsUrl: string = 'http://localhost:8080/api/subjects/teacher/{teacherId}/courses'
+  private gradesUrl: string = 'https://localhost:8080/api/subjects/student/{studentId}/grades';
+  private teacherSubjectsUrl: string = 'https://localhost:8080/api/subjects/teacher/{teacherId}/courses'
 
   constructor(private httpClient: HttpClient,
               private cookieService: CookieService) { }
