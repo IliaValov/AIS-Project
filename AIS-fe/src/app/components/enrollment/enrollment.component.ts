@@ -20,33 +20,37 @@ export class EnrollmentComponent implements OnInit {
     private router: Router,
     private cookieService: CookieService) {}
 
-    ngOnInit(): void {
-      this.courseId = Number(this.actRoute.snapshot.paramMap.get('studentId'));
-      this.enrollService.getStudentsNotEnrolled(this.courseId).subscribe({
-        next: (response: StudentNotEnrolledResponse)  => {
-          console.log(response);
-          this.students = response;
-        },
-        error: error => {
-          console.log(error);
-        }
-      });
-    }
+  ngOnInit(): void {
+    this.courseId = Number(this.actRoute.snapshot.paramMap.get('studentId'));
+    this.enrollService.getStudentsNotEnrolled(this.courseId).subscribe({
+      next: (response: StudentNotEnrolledResponse)  => {
+        console.log(response);
+        this.students = response;
+      },
+      error: error => {
+        console.log(error);
+      }
+    });
+  }
 
-    makeEnrollRequest(studentId: number) {
-      const courseId: number = Number(this.actRoute.snapshot.paramMap.get('studentId'));
-      
-      const jwtService: JwtHelperService = new JwtHelperService();
-      const token: string = this.cookieService.get('user-jwt');
-      const teacherId: number = Number(jwtService.decodeToken()['user_id']);
-      
-      this.enrollService.enrollStudent(studentId, teacherId, courseId).subscribe({
-        next: (response: any)  => {
-          console.log(response);
-        },
-        error: error => {
-          console.log(error);
-        }
-      });
-    }
+  makeEnrollRequest(studentId: number) {
+    const courseId: number = Number(this.actRoute.snapshot.paramMap.get('studentId'));
+    
+    const jwtService: JwtHelperService = new JwtHelperService();
+    const token: string = this.cookieService.get('user-jwt');
+    const teacherId: number = Number(jwtService.decodeToken()['user_id']);
+    
+    this.enrollService.enrollStudent(studentId, teacherId, courseId).subscribe({
+      next: (response: any)  => {
+        console.log(response);
+      },
+      error: error => {
+        console.log(error);
+      }
+    });
+  }
+
+  deleteCookie() {
+    this.cookieService.delete('user-jwt');
+  }
 }
