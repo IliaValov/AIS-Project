@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { CookieService } from 'ngx-cookie-service';
 import { StudentResponse } from 'src/app/dto/responses/student-response';
 import { GradesService } from 'src/app/services/grades.service';
 
@@ -12,9 +13,11 @@ export class GradesComponent implements OnInit {
   public students: StudentResponse = new StudentResponse();
   private courseId: number = 0;
 
-  constructor(private gradesService: GradesService,
+  constructor(
+    private gradesService: GradesService,
     private actRoute: ActivatedRoute,
-    private router: Router) {}
+    private router: Router,
+    private cookieService: CookieService) {}
 
   ngOnInit(): void {
     this.courseId = Number(this.actRoute.snapshot.paramMap.get('id'));
@@ -31,5 +34,9 @@ export class GradesComponent implements OnInit {
 
   routeToEditFormGrade(studentId: number) {
     this.router.navigate([`/home/teacher/course/${this.courseId}/student/${studentId}/edit-grade`]);
+  }
+
+  deleteCookie() {
+    this.cookieService.delete('user-jwt');
   }
 }
