@@ -1,0 +1,22 @@
+version: '1'
+services:
+  # Create frontend container
+  frontend: # Name of our service
+    build: ./AIS-fe # path to dockerfile
+    ports: # Port binding to host from docker container
+      - "8081:8081" # Bind port 3000 of host to 3000 of container
+    container_name: frontend-docker
+    restart: always # What to do if container crashes
+    links:
+      - backend
+  # Create backend container
+  backend:
+    # Create backend container
+    build: ./AIS-Project-API
+    ports:
+      - "8080:8080"
+    container_name: backend-docker
+    restart: always
+    env_file:
+      - ./AIS-Project-API/.env
+
