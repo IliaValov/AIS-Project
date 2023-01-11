@@ -22,7 +22,7 @@ export class GradesService {
     });
   }
 
-  public editGrade(studentId: number, courseId: number, grade: string) {
+  public editGrade(courseId: number, studentId: number, grade: string) {
     const editGrade: EditGradeRequest = new EditGradeRequest(
       courseId.toString(),
       studentId.toString(),
