@@ -9,6 +9,7 @@ import { RoleGuard } from './guards/role.guard';
 import { GradesComponent } from './components/grades/grades.component';
 import { EditGradeComponent } from './components/edit-grade/edit-grade.component';
 import { EnrollmentComponent } from './components/enrollment/enrollment.component';
+import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: 'home/student',
