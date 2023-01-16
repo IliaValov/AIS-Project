@@ -4,14 +4,15 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { EditGradeRequest } from '../dto/requests/edit-grade-request';
 import { StudentResponse } from '../dto/responses/student-response';
+import { Constants } from './constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GradesService {
-  private teacherCourseUrl: string = 'https://localhost:8080/api/subjects/{subjectId}/students'
-  private studentsWithGradesPerCourse: string = 'https://localhost:8080/api/subjects/teacher/course/{courseId}/students/grades'
-  private editGradeUrl: string = 'https://localhost:8080/api/subjects/editgrade'
+  private teacherCourseUrl: string = Constants.BackendUrl + 'subjects/{subjectId}/students'
+  private studentsWithGradesPerCourse: string = Constants.BackendUrl + 'subjects/teacher/course/{courseId}/students/grades'
+  private editGradeUrl: string = Constants.BackendUrl + 'subjects/editgrade'
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService) {}
 
