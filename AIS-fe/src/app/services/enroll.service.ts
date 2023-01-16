@@ -4,13 +4,14 @@ import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { EnrollRequest } from '../dto/requests/enroll-request';
 import { StudentNotEnrolledResponse } from '../dto/responses/student-not-enrolled-response';
+import { Constants } from './constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnrollService {
-  private studentsNotEnrolledUrl: string = 'https://localhost:8080/api/subjects/{courseId}/students/notenrolled'
-  private enrollStudentUrl: string = 'https://localhost:8080/api/subjects/joinsubject'
+  private studentsNotEnrolledUrl: string = Constants.BackendUrl + 'subjects/{courseId}/students/notenrolled'
+  private enrollStudentUrl: string = Constants.BackendUrl + 'subjects/joinsubject'
 
   constructor(private httpClient: HttpClient, private cookieService: CookieService) { }
 

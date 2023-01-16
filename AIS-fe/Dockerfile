@@ -1,22 +1,15 @@
-# Base image
-FROM node
-
-# Make folder to put our files in
-RUN mkdir -p /usr/app-ais
-RUN mkdir -p /usr/app-ais/frontend
-
-# Set working directory so that all subsequent command runs in this folder
-WORKDIR /usr/app-ais/frontend
-
-# Copy package json and install dependencies
+FROM node:18.10-alpine AS build
+WORKDIR /app
+COPY / ./
 COPY package*.json ./
-RUN npm install
 
-# Copy our app
+RUN npm install && \
+    npm run build
 COPY . .
 
-# Expose port to access server
-EXPOSE 8081
+FROM nginx:1.17.1-alpine
+WORKDIR /app
+COPY --from=build /app/dist/ais-fe /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Command to run our app
-CMD [ "npm", "start"]
+EXPOSE 80

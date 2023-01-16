@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http'
 import { Observable } from 'rxjs';
 import { RegisterRequest } from '../dto/requests/register-request';
 import { RegisterResponse } from '../dto/responses/register-response';
+import { Constants } from './constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
-  private registerUrl: string = 'https://localhost:8080/api/register'
+  private registerUrl: string = Constants.BackendUrl + 'register'
 
   constructor(private httpClient: HttpClient) {}
 
