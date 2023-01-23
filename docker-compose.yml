@@ -4,7 +4,7 @@ services:
   frontend: # Name of our service
     build: ./AIS-fe # path to dockerfile
     ports: # Port binding to host from docker container
-      - "4200:80" # Bind port 3000 of host to 3000 of container
+      - "8081:80" # Bind port 3000 of host to 3000 of container
     container_name: frontend-docker
     tty: true
     stdin_open: true

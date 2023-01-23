@@ -24,7 +24,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4200", "http://localhost:8080", "https://localhost:4200", "https://localhost:8080", "http://localhost:8080"},
+		AllowOrigins:     []string{"http://localhost:4200", "http://localhost:8080", "https://localhost:4200", "https://localhost:8080", "http://localhost:8080", "https://localhost:8081", "http://localhost:8081"},
 		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"*"},
